@@ -121,14 +121,11 @@ const EmployeeForm = (props) => {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-
-  const getEmpObj = (count) => {
-    return {
-      key: `empObj${count}`,
-      placeholder: `Employee Object ${count}`,
-    };
-  };
   const [redState, dispatch] = React.useReducer(empReducer, initstate);
+
+  React.useEffect(() => {
+    return () => {};
+  }, []);
 
   const icon =
     props.facePath === ''

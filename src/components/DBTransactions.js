@@ -26,43 +26,6 @@ const CREATE_WORK_TABLE = `CREATE TABLE IF NOT EXISTS ${DB_CONSTS.EMPWORK} (${DB
 
 let db;
 
-const initstate = {
-  fields: [
-    {
-      id: 'nameDetails',
-      children: [
-        {
-          key: 'firstName',
-          val: '',
-          placeholder: 'First Name',
-        },
-        {
-          key: 'lastName',
-          val: '',
-          placeholder: 'Last Name',
-        },
-      ],
-    },
-    {
-      id: 'additionalDetails',
-      children: [
-        {
-          key: 'age',
-          val: '',
-          placeholder: 'Age',
-        },
-        {
-          key: 'address',
-          val: '',
-          placeholder: 'Address',
-        },
-      ],
-    },
-  ],
-  educationFields: [],
-  workExperienceFields: [],
-};
-
 class DBTransactions {
   async getDB() {
     try {
@@ -161,15 +124,33 @@ class DBTransactions {
     await this.getDB();
     try {
       let res = await this.ExecuteQuery(`SELECT * FROM ${DB_CONSTS.EMPTABLE}`);
-
+      var empArray = [];
       for (let index = 0; index < res.rows.length; index++) {
-        console.log(res.rows.item(index));
+        empArray.push(res.rows.item(index));
       }
-      return res.rows.length;
+      return empArray;
     } catch (error) {
       console.log(`Error in fetching employees >>> ${error.message}`);
     }
   }
+
+  async dynamicEmpSearch(condition) {
+    await this.getDB();
+    try {
+      let res = await this.ExecuteQuery(
+        // `SELECT * FROM ${DB_CONSTS.EMPTABLE} WHERE ${DB_CONSTS.FNAME} LIKE '${condition}%'`,
+        `SELECT * FROM ${DB_CONSTS.EMPTABLE} WHERE (${DB_CONSTS.ADDR} LIKE '%${condition}%') OR (${DB_CONSTS.LNAME} LIKE '%${condition}%') OR (${DB_CONSTS.AGE} LIKE '%${condition}%') OR (${DB_CONSTS.FNAME} LIKE '%${condition}%')`,
+      );
+      var empArray = [];
+      for (let index = 0; index < res.rows.length; index++) {
+        empArray.push(res.rows.item(index));
+      }
+      return empArray;
+    } catch (error) {
+      console.log(`Error in fetching employees >>> ${error.message}`);
+    }
+  }
+
   async getAllDetails() {
     await this.getDB();
     try {
@@ -246,7 +227,7 @@ class DBTransactions {
       let wRes = await this.ExecuteQuery(
         `SELECT * FROM ${DB_CONSTS.EMPWORK} WHERE ${DB_CONSTS.EMP_ID} = ${empId}`,
       );
-      if ((res.rows.length == 0)) {
+      if (res.rows.length == 0) {
         console.log('Nothing to Display with Employee ID: ', empId);
         return 0;
       } else {
@@ -275,7 +256,7 @@ class DBTransactions {
       await this.ExecuteQuery(
         `UPDATE ${DB_CONSTS.EMPTABLE} SET ${DB_CONSTS.ADDR} = '${value}' WHERE ${DB_CONSTS.EMP_ID} = ${empId}`,
       );
-      ToastAndroid.show('Updated Successfully', ToastAndroid.SHORT)
+      ToastAndroid.show('Updated Successfully', ToastAndroid.SHORT);
     } catch (error) {
       console.log('Basic updation error', error.message);
     }
@@ -298,7 +279,7 @@ class DBTransactions {
           `INSERT INTO ${DB_CONSTS.EMPEDU} VALUES(${empId},'${cName}','${cPeriod}')`,
         );
       }
-      ToastAndroid.show('Updated Successfully', ToastAndroid.SHORT)
+      ToastAndroid.show('Updated Successfully', ToastAndroid.SHORT);
     } catch (error) {
       console.log('Education updation error', error.message);
     }
@@ -322,7 +303,7 @@ class DBTransactions {
           `INSERT INTO ${DB_CONSTS.EMPWORK} VALUES(${empId},'${cName}','${cPeriod}')`,
         );
       }
-      ToastAndroid.show('Updated Successfully', ToastAndroid.SHORT)
+      ToastAndroid.show('Updated Successfully', ToastAndroid.SHORT);
     } catch (error) {
       console.log('Education updation error', error.message);
     }
