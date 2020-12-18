@@ -7,6 +7,7 @@ import DeleteEmp from './DeleteEmployee';
 import EmployeeForm from './EmployeeForm';
 import NativeCall from './NativeCall';
 import SearchEmp from './SearchEmployee';
+import TableView from './TableView';
 import UpdateEmp from './UpdateEmployee';
 
 const getComponents = () => {
@@ -33,6 +34,12 @@ const getComponents = () => {
       key: 'Delete',
       onPress: () => {
         setPage(5);
+      },
+    },
+    {
+      key: 'View',
+      onPress: () => {
+        setPage(7);
       },
     },
   ];
@@ -130,6 +137,14 @@ const getComponents = () => {
           }}
         />
       );
+
+      case 7:
+        return(
+          <TableView 
+          onBackPress={() => {
+            setPage(0);
+          }}/>
+        )
 
     default:
       break;
